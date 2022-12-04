@@ -10,4 +10,5 @@ export enum Health {
   GOOD = 'GOOD',
   FAIR = 'FAIR',
   POOR = 'POOR',
+  UNKOWN = 'UNKNOWN',
 }

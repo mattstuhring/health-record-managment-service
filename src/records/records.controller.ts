@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Body, Controller, Get, Post } from '@nestjs/common';
 import { RecordsService } from './records.service';
 import { Record } from './records.model';
 
@@ -13,5 +13,10 @@ export class RecordsController {
   @Get()
   getAllRecords(): Record[] {
     return this.recordsService.getAllRecords();
+  }
+
+  @Post()
+  createRecord(@Body('name') name: string, @Body('dob') dob: string): Record {
+    return this.recordsService.createRecord(name, dob);
   }
 }
