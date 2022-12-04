@@ -1,5 +1,6 @@
 import { Controller, Get } from '@nestjs/common';
-import { RecordsService, Record } from './records.service';
+import { RecordsService } from './records.service';
+import { Record } from './records.model';
 
 @Controller('records')
 export class RecordsController {
@@ -10,7 +11,7 @@ export class RecordsController {
   }
 
   @Get()
-  public getAllRecords(): Record[] {
+  getAllRecords(): Record[] {
     return this.recordsService.getAllRecords();
   }
 }
