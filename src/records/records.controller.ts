@@ -7,14 +7,16 @@ import {
   Post,
   HttpCode,
   Patch,
+  Query,
 } from '@nestjs/common';
 import { RecordsService } from './records.service';
 import { Record } from './records.model';
 import { CreateRecordDto } from './dto/create-record.dto';
-import { ReadRecordDto } from './dto/read-record.dto';
+import { GetRecordDto } from './dto/get-record.dto';
 import { DeleteRecordDto } from './dto/delete-record.dto';
 import { UpdateRecordDto } from './dto/update-record.dto';
 import { UpdateRecordHealthDto } from './dto/update-record-health.dto';
+import { GetRecordsFilterDto } from './dto/get-records-filter.dto';
 
 @Controller('records')
 export class RecordsController {
@@ -25,15 +27,22 @@ export class RecordsController {
   }
 
   @Get()
-  getAllRecords(): Record[] {
+  getRecords(@Query() getRecordsFilterDto: GetRecordsFilterDto): Record[] {
     console.log('getAllRecords');
-    return this.recordsService.getAllRecords();
+
+    if (Object.keys(getRecordsFilterDto).length > 0) {
+      // Apply records filtering
+      return this.recordsService.getRecordsWithFilters(getRecordsFilterDto);
+    } else {
+      // Get all records
+      return this.recordsService.getAllRecords();
+    }
   }
 
   @Get('/:id')
-  getRecordById(@Param() readRecordDto: ReadRecordDto): Record {
+  getRecordById(@Param() getRecordDto: GetRecordDto): Record {
     console.log('getRecordById');
-    return this.recordsService.getRecordById(readRecordDto);
+    return this.recordsService.getRecordById(getRecordDto);
   }
 
   @Post()
