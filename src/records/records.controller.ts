@@ -1,6 +1,17 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  HttpCode,
+} from '@nestjs/common';
 import { RecordsService } from './records.service';
 import { Record } from './records.model';
+import { CreateRecordDto } from './dto/create.record.dto';
+import { ReadRecordDto } from './dto/read.record.dto';
+import { DeleteRecordDto } from './dto/delete.record.dto';
 
 @Controller('records')
 export class RecordsController {
@@ -12,11 +23,26 @@ export class RecordsController {
 
   @Get()
   getAllRecords(): Record[] {
+    console.log('getAllRecords');
     return this.recordsService.getAllRecords();
   }
 
+  @Get('/:id')
+  getRecordById(@Param() readRecordDto: ReadRecordDto): Record {
+    console.log('getRecordById');
+    return this.recordsService.getRecordById(readRecordDto);
+  }
+
   @Post()
-  createRecord(@Body('name') name: string, @Body('dob') dob: string): Record {
-    return this.recordsService.createRecord(name, dob);
+  createRecord(@Body() createRecordDto: CreateRecordDto): Record {
+    console.log('createRecord');
+    return this.recordsService.createRecord(createRecordDto);
+  }
+
+  @Delete('/:id')
+  @HttpCode(204)
+  deleteRecord(@Param() deleteRecordDto: DeleteRecordDto): void {
+    console.log('deleteRecord');
+    this.recordsService.deleteRecord(deleteRecordDto);
   }
 }
