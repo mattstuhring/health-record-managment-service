@@ -45,8 +45,16 @@ export class RecordsService {
     const readRecordDto: ReadRecordDto = {
       id: updateRecordDto.id,
     };
+
     const record: Record = this.getRecordById(readRecordDto);
-    record.health = updateRecordHealthDto.health;
+
+    this.records = this.records.map((rec) => {
+      if (rec.id === record.id) {
+        rec.health = updateRecordHealthDto.health;
+      }
+
+      return rec;
+    });
 
     return record;
   }
