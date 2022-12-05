@@ -1,11 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { Record, Health } from './records.model';
-import { CreateRecordDto } from './dto/create.record.dto';
-import { ReadRecordDto } from './dto/read.record.dto';
-import { DeleteRecordDto } from './dto/delete.record.dto';
-import { UpdateRecordDto } from './dto/update.record.dto';
-import { UpdateRecordHealthDto } from './dto/update.record.health.dto';
+import { CreateRecordDto } from './dto/create-record.dto';
+import { ReadRecordDto } from './dto/read-record.dto';
+import { DeleteRecordDto } from './dto/delete-record.dto';
+import { UpdateRecordDto } from './dto/update-record.dto';
+import { UpdateRecordHealthDto } from './dto/update-record-health.dto';
 
 @Injectable()
 export class RecordsService {
