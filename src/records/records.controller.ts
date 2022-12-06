@@ -31,10 +31,10 @@ export class RecordsController {
     console.log('getAllRecords');
 
     if (Object.keys(getRecordsFilterDto).length > 0) {
-      // Apply records filtering
+      // Apply records filtering based on query params
       return this.recordsService.getRecordsWithFilters(getRecordsFilterDto);
     } else {
-      // Get all records
+      // Otherwise get all records
       return this.recordsService.getAllRecords();
     }
   }

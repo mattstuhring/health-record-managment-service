@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
 import { Record, Health } from './records.model';
 import { CreateRecordDto } from './dto/create-record.dto';
@@ -19,9 +19,15 @@ export class RecordsService {
   getRecordById(getRecordDto: GetRecordDto): Record {
     const { id } = getRecordDto;
 
-    return this.records.find((obj) => {
+    const record: Record = this.records.find((obj) => {
       return obj.id === id;
     });
+
+    if (!record) {
+      throw new NotFoundException(`Record with ID ${id} not found`);
+    }
+
+    return record;
   }
 
   getRecordsWithFilters(getRecordsFilterDto: GetRecordsFilterDto): Record[] {
@@ -85,8 +91,14 @@ export class RecordsService {
   }
 
   deleteRecord(deleteRecordDto: DeleteRecordDto): void {
+    const getRecordById: GetRecordDto = { id: deleteRecordDto.id };
+
+    // Check if record ID exists
+    const record = this.getRecordById(getRecordById);
+
+    // If yes, then delete record
     this.records = this.records.filter((rec) => {
-      return rec.id !== deleteRecordDto.id;
+      return rec.id !== record.id;
     });
   }
 }
