@@ -1,5 +1,5 @@
 import { Healthcare } from '../records.model';
-import { IsNotEmpty } from 'class-validator';
+import { IsEnum, IsNotEmpty } from 'class-validator';
 
 export class CreateRecordDto {
   @IsNotEmpty()
@@ -9,5 +9,6 @@ export class CreateRecordDto {
   dob: string;
 
   @IsNotEmpty()
+  @IsEnum(Healthcare)
   healthcare: Healthcare;
 }
