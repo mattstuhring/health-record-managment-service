@@ -1,5 +1,5 @@
 import { IsEnum, IsOptional, IsString } from 'class-validator';
-import { Healthcare } from '../records.model';
+import { Healthcare } from '../record.model';
 
 export class GetRecordsFilterDto {
   @IsOptional()

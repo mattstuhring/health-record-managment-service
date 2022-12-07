@@ -10,7 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { RecordsService } from './records.service';
-import { Record } from './records.model';
+import { Record } from './record.model';
 import { CreateRecordDto } from './dto/create-record.dto';
 import { GetRecordDto } from './dto/get-record.dto';
 import { DeleteRecordDto } from './dto/delete-record.dto';

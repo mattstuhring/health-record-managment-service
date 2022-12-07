@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { v4 as uuidv4 } from 'uuid';
-import { Record, Health } from './records.model';
+import { Record, Health } from './record.model';
 import { CreateRecordDto } from './dto/create-record.dto';
 import { GetRecordDto } from './dto/get-record.dto';
 import { DeleteRecordDto } from './dto/delete-record.dto';
