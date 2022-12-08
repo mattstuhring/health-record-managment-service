@@ -1,5 +1,6 @@
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Health, Healthcare } from './record.model';
+import { Health } from './record-health.enum';
+import { Healthcare } from './record-healthcare.enum';
 
 @Entity()
 export class Record {

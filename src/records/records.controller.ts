@@ -10,7 +10,7 @@ import {
   Query,
 } from '@nestjs/common';
 import { RecordsService } from './records.service';
-import { Record } from './record.model';
+import { Record } from './record.entity';
 import { CreateRecordDto } from './dto/create-record.dto';
 import { GetRecordDto } from './dto/get-record.dto';
 import { DeleteRecordDto } from './dto/delete-record.dto';
@@ -27,27 +27,19 @@ export class RecordsController {
   }
 
   @Get()
-  getRecords(@Query() getRecordsFilterDto: GetRecordsFilterDto): Record[] {
-    console.log('getAllRecords');
-
-    if (Object.keys(getRecordsFilterDto).length > 0) {
-      // Apply records filtering based on query params
-      return this.recordsService.getRecordsWithFilters(getRecordsFilterDto);
-    } else {
-      // Otherwise get all records
-      return this.recordsService.getAllRecords();
-    }
+  getRecords(
+    @Query() getRecordsFilterDto: GetRecordsFilterDto,
+  ): Promise<Record[]> {
+    return this.recordsService.getRecords(getRecordsFilterDto);
   }
 
   @Get('/:id')
-  getRecordById(@Param() getRecordDto: GetRecordDto): Record {
-    console.log('getRecordById');
+  getRecordById(@Param() getRecordDto: GetRecordDto): Promise<Record> {
     return this.recordsService.getRecordById(getRecordDto);
   }
 
   @Post()
-  createRecord(@Body() createRecordDto: CreateRecordDto): Record {
-    console.log('createRecord');
+  createRecord(@Body() createRecordDto: CreateRecordDto): Promise<Record> {
     return this.recordsService.createRecord(createRecordDto);
   }
 
@@ -55,8 +47,7 @@ export class RecordsController {
   updateRecordHealth(
     @Param() updateRecordDto: UpdateRecordDto,
     @Body() updateRecordHealthDto: UpdateRecordHealthDto,
-  ): Record {
-    console.log('updateRecord');
+  ): Promise<Record> {
     return this.recordsService.updateRecordHealth(
       updateRecordDto,
       updateRecordHealthDto,
@@ -65,8 +56,7 @@ export class RecordsController {
 
   @Delete('/:id')
   @HttpCode(204)
-  deleteRecord(@Param() deleteRecordDto: DeleteRecordDto): void {
-    console.log('deleteRecord');
-    this.recordsService.deleteRecord(deleteRecordDto);
+  deleteRecord(@Param() deleteRecordDto: DeleteRecordDto): Promise<void> {
+    return this.recordsService.deleteRecord(deleteRecordDto);
   }
 }
