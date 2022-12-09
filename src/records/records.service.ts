@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+  Logger,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { HealthStatus } from './record-health-status.enum';
@@ -14,6 +20,7 @@ import { User } from 'src/users/user.entity';
 @Injectable()
 export class RecordsService {
   private recordsRepository: Repository<Record>;
+  private logger = new Logger('RecordsService', { timestamp: true });
 
   constructor(@InjectRepository(Record) recordsRepository: Repository<Record>) {
     this.recordsRepository = recordsRepository;
@@ -40,7 +47,18 @@ export class RecordsService {
       );
     }
 
-    return await query.getMany();
+    try {
+      return await query.getMany();
+    } catch (error) {
+      this.logger.error(
+        `Failed to get records. Filters: ${JSON.stringify(
+          getRecordsFilterDto,
+        )}`,
+        error.stack,
+      );
+
+      throw new InternalServerErrorException();
+    }
   }
 
   async getRecordById(getRecordDto: GetRecordDto): Promise<Record> {
@@ -78,18 +96,7 @@ export class RecordsService {
     return record;
   }
 
-  async deleteRecord(deleteRecordDto: DeleteRecordDto): Promise<void> {
-    const { id } = deleteRecordDto;
-    const result = await this.recordsRepository.delete(id);
-
-    if (result.affected === 0) {
-      throw new NotFoundException(`Record with ID: ${id} not found`);
-    }
-
-    return;
-  }
-
-  async updateRecordHealth(
+  async updateRecordHealthStatus(
     updateRecordDto: UpdateRecordDto,
     updateRecordHealthDto: UpdateRecordHealthDto,
   ): Promise<Record> {
@@ -100,5 +107,21 @@ export class RecordsService {
     await this.recordsRepository.save(record);
 
     return record;
+  }
+
+  async deleteRecord(
+    deleteRecordDto: DeleteRecordDto,
+    user: User,
+  ): Promise<void> {
+    if (user.accessLevel === 'ADMIN') {
+      const { id } = deleteRecordDto;
+      const result = await this.recordsRepository.delete(id);
+
+      if (result.affected === 0) {
+        throw new NotFoundException(`Record with ID: ${id} not found`);
+      }
+    } else {
+      throw new UnauthorizedException();
+    }
   }
 }

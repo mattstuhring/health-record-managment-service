@@ -9,6 +9,7 @@ import {
   Patch,
   Query,
   UseGuards,
+  Logger,
 } from '@nestjs/common';
 import { RecordsService } from './records.service';
 import { Record } from './record.entity';
@@ -26,6 +27,7 @@ import { User } from 'src/users/user.entity';
 @UseGuards(AuthGuard())
 export class RecordsController {
   private recordsService: RecordsService;
+  private logger = new Logger('RecordsController');
 
   constructor(recordsService: RecordsService) {
     this.recordsService = recordsService;
@@ -51,6 +53,11 @@ export class RecordsController {
     @Body() createRecordDto: CreateRecordDto,
     @GetUser() user: User,
   ): Promise<Record> {
+    this.logger.verbose(
+      `User ${user.username} creating new record: ${JSON.stringify(
+        createRecordDto,
+      )}`,
+    );
     return this.recordsService.createRecord(createRecordDto, user);
   }
 
@@ -60,7 +67,7 @@ export class RecordsController {
     @Param() updateRecordDto: UpdateRecordDto,
     @Body() updateRecordHealthDto: UpdateRecordHealthDto,
   ): Promise<Record> {
-    return this.recordsService.updateRecordHealth(
+    return this.recordsService.updateRecordHealthStatus(
       updateRecordDto,
       updateRecordHealthDto,
     );
@@ -69,7 +76,10 @@ export class RecordsController {
   // Access - Admin
   @Delete('/:id')
   @HttpCode(204)
-  deleteRecord(@Param() deleteRecordDto: DeleteRecordDto): Promise<void> {
-    return this.recordsService.deleteRecord(deleteRecordDto);
+  deleteRecord(
+    @Param() deleteRecordDto: DeleteRecordDto,
+    @GetUser() user: User,
+  ): Promise<void> {
+    return this.recordsService.deleteRecord(deleteRecordDto, user);
   }
 }
