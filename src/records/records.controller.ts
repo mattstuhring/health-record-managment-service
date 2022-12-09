@@ -8,6 +8,7 @@ import {
   HttpCode,
   Patch,
   Query,
+  UseGuards,
 } from '@nestjs/common';
 import { RecordsService } from './records.service';
 import { Record } from './record.entity';
@@ -17,8 +18,10 @@ import { DeleteRecordDto } from './dto/delete-record.dto';
 import { UpdateRecordDto } from './dto/update-record.dto';
 import { UpdateRecordHealthDto } from './dto/update-record-health.dto';
 import { GetRecordsFilterDto } from './dto/get-records-filter.dto';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('records')
+@UseGuards(AuthGuard())
 export class RecordsController {
   private recordsService: RecordsService;
 
