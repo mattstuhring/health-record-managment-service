@@ -1,13 +1,6 @@
-import {
-  IsEnum,
-  IsString,
-  Matches,
-  MaxLength,
-  MinLength,
-} from 'class-validator';
-import { AccessLevel } from '../user-access-level.enum';
+import { IsString, Matches, MaxLength, MinLength } from 'class-validator';
 
-export class AuthSignUpDto {
+export class AuthCredentialsDto {
   @IsString()
   @MinLength(4)
   @MaxLength(20)
@@ -27,7 +20,4 @@ export class AuthSignUpDto {
     message: 'Password is too weak',
   })
   password: string;
-
-  @IsEnum(AccessLevel)
-  accessLevel: AccessLevel;
 }

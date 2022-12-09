@@ -9,7 +9,7 @@ import { UpdateRecordDto } from './dto/update-record.dto';
 import { UpdateRecordHealthDto } from './dto/update-record-health.dto';
 import { GetRecordsFilterDto } from './dto/get-records-filter.dto';
 import { Record } from './record.entity';
-import { User } from 'src/auth/user.entity';
+import { User } from 'src/users/user.entity';
 
 @Injectable()
 export class RecordsService {

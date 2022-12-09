@@ -19,8 +19,8 @@ import { UpdateRecordDto } from './dto/update-record.dto';
 import { UpdateRecordHealthDto } from './dto/update-record-health.dto';
 import { GetRecordsFilterDto } from './dto/get-records-filter.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from 'src/auth/get-user.decorator';
-import { User } from 'src/auth/user.entity';
+import { GetUser } from 'src/users/get-user.decorator';
+import { User } from 'src/users/user.entity';
 
 @Controller('records')
 @UseGuards(AuthGuard())
@@ -55,7 +55,7 @@ export class RecordsController {
   }
 
   // Access - Admin, Employee
-  @Patch('/:id/health-status')
+  @Patch('/:id/health/status')
   updateRecordHealth(
     @Param() updateRecordDto: UpdateRecordDto,
     @Body() updateRecordHealthDto: UpdateRecordHealthDto,
