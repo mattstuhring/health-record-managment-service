@@ -1,6 +1,15 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-import { Health } from './record-health.enum';
+import { User } from '../auth/user.entity';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { HealthStatus } from './record-health-status.enum';
 import { Healthcare } from './record-healthcare.enum';
+import { Exclude } from 'class-transformer';
 
 @Entity()
 export class Record {
@@ -10,12 +19,25 @@ export class Record {
   @Column()
   name: string;
 
-  @Column()
-  dob: string;
+  @Column({ name: 'date_of_birth' })
+  dateOfBirth: string;
 
-  @Column()
-  healthcare: Healthcare;
+  @Column({ name: 'type_of_care' })
+  typeOfCare: Healthcare;
 
-  @Column()
-  health: Health;
+  @Column({ name: 'health_status' })
+  healthStatus: HealthStatus;
+
+  @Column({ name: 'updated_by' })
+  updatedBy: string;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt: Date;
+
+  @UpdateDateColumn({ name: 'updated_at' })
+  updatedAt: Date;
+
+  @ManyToOne(() => User, (user) => user.records, { eager: false })
+  @Exclude()
+  user: User;
 }

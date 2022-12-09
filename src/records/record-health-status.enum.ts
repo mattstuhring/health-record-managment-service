@@ -1,4 +1,4 @@
-export enum Health {
+export enum HealthStatus {
   EXCELLENT = 'EXCELLENT',
   GOOD = 'GOOD',
   FAIR = 'FAIR',

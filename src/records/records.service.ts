@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Health } from './record-health.enum';
+import { HealthStatus } from './record-health-status.enum';
 import { CreateRecordDto } from './dto/create-record.dto';
 import { GetRecordDto } from './dto/get-record.dto';
 import { DeleteRecordDto } from './dto/delete-record.dto';
@@ -9,6 +9,7 @@ import { UpdateRecordDto } from './dto/update-record.dto';
 import { UpdateRecordHealthDto } from './dto/update-record-health.dto';
 import { GetRecordsFilterDto } from './dto/get-records-filter.dto';
 import { Record } from './record.entity';
+import { User } from 'src/auth/user.entity';
 
 @Injectable()
 export class RecordsService {
@@ -21,20 +22,20 @@ export class RecordsService {
   async getRecords(
     getRecordsFilterDto: GetRecordsFilterDto,
   ): Promise<Record[]> {
-    const { healthcare, search } = getRecordsFilterDto;
+    const { typeOfCare, search } = getRecordsFilterDto;
     const query = this.recordsRepository.createQueryBuilder('record');
 
     // Case insensitive search using LOWER()
-    if (healthcare) {
-      query.andWhere('LOWER(record.healthcare) = LOWER(:healthcare)', {
-        healthcare,
+    if (typeOfCare) {
+      query.andWhere('LOWER(record.typeOfCare) = LOWER(:typeOfCare)', {
+        typeOfCare,
       });
     }
 
     // Case insensitive search using LOWER()
     if (search) {
       query.andWhere(
-        'LOWER(record.name) = LOWER(:name) OR LOWER(record.dob) = LOWER(:dob) OR LOWER(record.health) = LOWER(:health)',
+        'LOWER(record.name) = LOWER(:name) OR LOWER(record.dateOfBirth) = LOWER(:dateOfBirth) OR LOWER(record.healthStatus) = LOWER(:healthStatus)',
         { name: search, dob: search, health: search },
       );
     }
@@ -57,13 +58,19 @@ export class RecordsService {
     return record;
   }
 
-  async createRecord(createRecordDto: CreateRecordDto): Promise<Record> {
-    const { name, dob, healthcare } = createRecordDto;
+  async createRecord(
+    createRecordDto: CreateRecordDto,
+    user: User,
+  ): Promise<Record> {
+    const { name, dateOfBirth, typeOfCare } = createRecordDto;
+    const { username } = user;
     const record = this.recordsRepository.create({
       name,
-      dob,
-      healthcare,
-      health: Health.UNKNOWN,
+      dateOfBirth,
+      typeOfCare,
+      healthStatus: HealthStatus.UNKNOWN,
+      updatedBy: username,
+      user,
     });
 
     await this.recordsRepository.save(record);
@@ -86,9 +93,9 @@ export class RecordsService {
     updateRecordDto: UpdateRecordDto,
     updateRecordHealthDto: UpdateRecordHealthDto,
   ): Promise<Record> {
-    const { health } = updateRecordHealthDto;
+    const { healthStatus } = updateRecordHealthDto;
     const record = await this.getRecordById(updateRecordDto);
-    record.health = health;
+    record.healthStatus = healthStatus;
 
     await this.recordsRepository.save(record);
 

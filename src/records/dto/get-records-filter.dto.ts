@@ -4,7 +4,7 @@ import { Healthcare } from '../record-healthcare.enum';
 export class GetRecordsFilterDto {
   @IsOptional()
   @IsEnum(Healthcare)
-  healthcare?: Healthcare;
+  typeOfCare?: Healthcare;
 
   @IsOptional()
   @IsString()

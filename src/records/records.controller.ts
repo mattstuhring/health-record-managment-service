@@ -19,6 +19,8 @@ import { UpdateRecordDto } from './dto/update-record.dto';
 import { UpdateRecordHealthDto } from './dto/update-record-health.dto';
 import { GetRecordsFilterDto } from './dto/get-records-filter.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { GetUser } from 'src/auth/get-user.decorator';
+import { User } from 'src/auth/user.entity';
 
 @Controller('records')
 @UseGuards(AuthGuard())
@@ -29,6 +31,7 @@ export class RecordsController {
     this.recordsService = recordsService;
   }
 
+  // Access - Admin, Employee
   @Get()
   getRecords(
     @Query() getRecordsFilterDto: GetRecordsFilterDto,
@@ -36,17 +39,23 @@ export class RecordsController {
     return this.recordsService.getRecords(getRecordsFilterDto);
   }
 
+  // Access - Admin, Employee
   @Get('/:id')
   getRecordById(@Param() getRecordDto: GetRecordDto): Promise<Record> {
     return this.recordsService.getRecordById(getRecordDto);
   }
 
+  // Access - Admin, Employee
   @Post()
-  createRecord(@Body() createRecordDto: CreateRecordDto): Promise<Record> {
-    return this.recordsService.createRecord(createRecordDto);
+  createRecord(
+    @Body() createRecordDto: CreateRecordDto,
+    @GetUser() user: User,
+  ): Promise<Record> {
+    return this.recordsService.createRecord(createRecordDto, user);
   }
 
-  @Patch('/:id/health')
+  // Access - Admin, Employee
+  @Patch('/:id/health-status')
   updateRecordHealth(
     @Param() updateRecordDto: UpdateRecordDto,
     @Body() updateRecordHealthDto: UpdateRecordHealthDto,
@@ -57,6 +66,7 @@ export class RecordsController {
     );
   }
 
+  // Access - Admin
   @Delete('/:id')
   @HttpCode(204)
   deleteRecord(@Param() deleteRecordDto: DeleteRecordDto): Promise<void> {

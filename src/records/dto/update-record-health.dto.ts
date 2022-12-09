@@ -1,7 +1,7 @@
 import { IsEnum } from 'class-validator';
-import { Health } from '../record-health.enum';
+import { HealthStatus } from '../record-health-status.enum';
 
 export class UpdateRecordHealthDto {
-  @IsEnum(Health)
-  health: Health;
+  @IsEnum(HealthStatus)
+  healthStatus: HealthStatus;
 }

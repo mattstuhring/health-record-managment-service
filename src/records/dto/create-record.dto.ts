@@ -6,9 +6,9 @@ export class CreateRecordDto {
   name: string;
 
   @IsNotEmpty()
-  dob: string;
+  dateOfBirth: string;
 
   @IsNotEmpty()
   @IsEnum(Healthcare)
-  healthcare: Healthcare;
+  typeOfCare: Healthcare;
 }

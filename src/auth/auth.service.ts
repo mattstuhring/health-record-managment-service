@@ -6,11 +6,12 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AuthCredentialsDto } from './dto/auth-credentials.dto';
+import { AuthSignInDto } from './dto/auth-signin.dto';
 import { User } from '../auth/user.entity';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { JwtPayload } from './dto/jwt-payload.interface';
+import { AuthSignUpDto } from './dto/auth-signup.dto';
 
 @Injectable()
 export class AuthService {
@@ -26,8 +27,9 @@ export class AuthService {
     this.jwtService = jwtService;
   }
 
-  async signUp(authCredentialsDto: AuthCredentialsDto): Promise<void> {
-    const { username, password } = authCredentialsDto;
+  // Access - Admin
+  async signUp(authSignUpDto: AuthSignUpDto): Promise<void> {
+    const { username, password, accessLevel } = authSignUpDto;
 
     try {
       const salt = await bcrypt.genSalt(); // default 10 saltRounds
@@ -36,6 +38,7 @@ export class AuthService {
       const user = this.userRepository.create({
         username,
         password: hashedPassword,
+        accessLevel,
       });
 
       await this.userRepository.save(user);
@@ -49,10 +52,9 @@ export class AuthService {
     }
   }
 
-  async signIn(
-    authCredentialsDto: AuthCredentialsDto,
-  ): Promise<{ accessToken: string }> {
-    const { username, password } = authCredentialsDto;
+  // Access - Admin, Employee
+  async signIn(authSignInDto: AuthSignInDto): Promise<{ accessToken: string }> {
+    const { username, password } = authSignInDto;
     const user = await this.userRepository.findOneBy({ username });
 
     if (user && (await bcrypt.compare(password, user.password))) {
