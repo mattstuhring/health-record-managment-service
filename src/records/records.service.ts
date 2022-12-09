@@ -36,7 +36,7 @@ export class RecordsService {
     if (search) {
       query.andWhere(
         'LOWER(record.name) = LOWER(:name) OR LOWER(record.dateOfBirth) = LOWER(:dateOfBirth) OR LOWER(record.healthStatus) = LOWER(:healthStatus)',
-        { name: search, dob: search, health: search },
+        { name: search, dateOfBirth: search, healthStatus: search },
       );
     }
 
