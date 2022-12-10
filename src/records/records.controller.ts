@@ -20,8 +20,8 @@ import { UpdateRecordDto } from './dto/update-record.dto';
 import { UpdateRecordHealthDto } from './dto/update-record-health.dto';
 import { GetRecordsFilterDto } from './dto/get-records-filter.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { GetUser } from 'src/users/get-user.decorator';
-import { User } from 'src/users/user.entity';
+import { GetUser } from '../users/get-user.decorator';
+import { User } from '../users/user.entity';
 
 @Controller('records')
 @UseGuards(AuthGuard())
