@@ -1,4 +1,4 @@
-import { User } from '../users/user.entity';
+import { User } from '../../users/entity/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -7,8 +7,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { HealthStatus } from './record-health-status.enum';
-import { Healthcare } from './record-healthcare.enum';
+import { HealthStatus } from '../constants/record-health-status.enum';
+import { Healthcare } from '../constants/record-healthcare.enum';
 import { Exclude } from 'class-transformer';
 
 @Entity()

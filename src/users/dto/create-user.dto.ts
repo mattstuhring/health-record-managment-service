@@ -5,7 +5,7 @@ import {
   MaxLength,
   MinLength,
 } from 'class-validator';
-import { AccessLevel } from '../../users/user-access-level.enum';
+import { AccessLevel } from '../constants/user-access-level.enum';
 
 export class CreateUserDto {
   @IsString()

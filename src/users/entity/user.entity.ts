@@ -1,4 +1,4 @@
-import { Record } from '../records/record.entity';
+import { Record } from '../../records/entity/record.entity';
 import {
   Column,
   CreateDateColumn,
@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { AccessLevel } from './user-access-level.enum';
+import { AccessLevel } from '../constants/user-access-level.enum';
 
 @Entity()
 export class User {

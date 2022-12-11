@@ -1,4 +1,4 @@
-import { Healthcare } from '../record-healthcare.enum';
+import { Healthcare } from '../constants/record-healthcare.enum';
 import { IsEnum, IsNotEmpty } from 'class-validator';
 
 export class CreateRecordDto {

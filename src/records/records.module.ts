@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RecordsController } from './records.controller';
-import { Record } from './record.entity';
-import { RecordsService } from './records.service';
+import { RecordsController } from './controllers/records.controller';
+import { Record } from './entity/record.entity';
+import { RecordsService } from './providers/records.service';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
