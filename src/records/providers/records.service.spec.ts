@@ -54,7 +54,7 @@ describe('RecordsService', () => {
   });
 
   describe('getRecords', () => {
-    it('calls RecordsRepository.getRecords() and returns the result', async () => {
+    it('calls RecordsService.getRecords() and returns the result', async () => {
       const result: Record[] = [];
       const spy = jest
         .spyOn(recordsService, 'getRecords')
@@ -66,7 +66,7 @@ describe('RecordsService', () => {
       expect(response).toEqual(result);
     });
 
-    it('test getRecords functionality', async () => {
+    it('should call RecordsRepository.createQueryBuilder() 1 time', async () => {
       const spy = jest.spyOn(recordsRepository, 'createQueryBuilder');
 
       await recordsService.getRecords({
@@ -113,7 +113,7 @@ describe('RecordsService', () => {
       expect(spy).toBeCalledTimes(1);
     });
 
-    it('should call query.andWhere() 2 time', async () => {
+    it('should call query.andWhere() 2 times', async () => {
       jest
         .spyOn(recordsRepository, 'createQueryBuilder')
         .mockImplementation(() => createQueryBuilder);
