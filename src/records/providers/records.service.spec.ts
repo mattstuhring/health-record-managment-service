@@ -2,14 +2,14 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { JwtStrategy } from 'src/auth/jwt.strategy';
 import { User } from 'src/users/entity/user.entity';
-import { Repository } from 'typeorm';
+import { Repository, SelectQueryBuilder } from 'typeorm';
 import { GetRecordsFilterDto } from '../dto/get-records-filter.dto';
 import { HealthStatus } from '../constants/record-health-status.enum';
 import { Healthcare } from '../constants/record-healthcare.enum';
 import { Record } from '../entity/record.entity';
 import { RecordsService } from './records.service';
 
-const mockRecordsRepository: () => unknown = jest.fn(() => ({
+const mockRecordsRepository = jest.fn(() => ({
   findOneBy: jest.fn(),
   create: jest.fn(),
   save: jest.fn(),
@@ -21,37 +21,114 @@ const mockRecordsRepository: () => unknown = jest.fn(() => ({
   })),
 }));
 
-let mockRecord: jest.Mocked<Record>;
-let mockGetRecordsFilterDto: jest.Mocked<GetRecordsFilterDto>;
+const createQueryBuilder: any = {
+  andWhere: jest.fn(),
+  getMany: jest.fn(),
+};
 
 describe('RecordsService', () => {
   let recordsService: RecordsService;
+  let recordsRepository: Repository<Record>;
+  let mockRecord: jest.Mocked<Record>;
+  let mockGetRecordsFilterDto: jest.Mocked<GetRecordsFilterDto>;
+
+  const REPOSITORY_TOKEN = getRepositoryToken(Record);
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         RecordsService,
         {
-          provide: getRepositoryToken(Record),
+          provide: REPOSITORY_TOKEN,
           useFactory: mockRecordsRepository,
         },
       ],
     }).compile();
 
     recordsService = module.get<RecordsService>(RecordsService);
+    recordsRepository = module.get<Repository<Record>>(REPOSITORY_TOKEN);
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   describe('getRecords', () => {
-    it('calls RecordsRepository.getRecords and returns the result', async () => {
-      const response: Record[] = [];
+    it('calls RecordsRepository.getRecords() and returns the result', async () => {
+      const result: Record[] = [];
       const spy = jest
         .spyOn(recordsService, 'getRecords')
-        .mockResolvedValue(response);
+        .mockResolvedValue(result);
 
-      const result = await recordsService.getRecords(mockGetRecordsFilterDto);
+      const response = await recordsService.getRecords(mockGetRecordsFilterDto);
 
       expect(spy).toHaveBeenCalledWith(mockGetRecordsFilterDto);
-      expect(result).toEqual(response);
+      expect(response).toEqual(result);
+    });
+
+    it('test getRecords functionality', async () => {
+      const spy = jest.spyOn(recordsRepository, 'createQueryBuilder');
+
+      await recordsService.getRecords({
+        search: '',
+        typeOfCare: Healthcare.EMERGENCY_HEALTHCARE,
+      });
+
+      expect(spy).toHaveBeenCalledTimes(1);
+    });
+
+    it('should not call query.andWhere()', async () => {
+      jest
+        .spyOn(recordsRepository, 'createQueryBuilder')
+        .mockImplementation(() => createQueryBuilder);
+
+      const spy = jest.spyOn(
+        recordsRepository.createQueryBuilder(),
+        'andWhere',
+      );
+
+      await recordsService.getRecords({
+        search: '',
+        typeOfCare: null,
+      });
+
+      expect(spy).toBeCalledTimes(0);
+    });
+
+    it('should call query.andWhere() 1 time', async () => {
+      jest
+        .spyOn(recordsRepository, 'createQueryBuilder')
+        .mockImplementation(() => createQueryBuilder);
+
+      const spy = jest.spyOn(
+        recordsRepository.createQueryBuilder(),
+        'andWhere',
+      );
+
+      await recordsService.getRecords({
+        search: '',
+        typeOfCare: Healthcare.EMERGENCY_HEALTHCARE,
+      });
+
+      expect(spy).toBeCalledTimes(1);
+    });
+
+    it('should call query.andWhere() 2 time', async () => {
+      jest
+        .spyOn(recordsRepository, 'createQueryBuilder')
+        .mockImplementation(() => createQueryBuilder);
+
+      const spy = jest.spyOn(
+        recordsRepository.createQueryBuilder(),
+        'andWhere',
+      );
+
+      await recordsService.getRecords({
+        search: 'test',
+        typeOfCare: Healthcare.EMERGENCY_HEALTHCARE,
+      });
+
+      expect(spy).toBeCalledTimes(2);
     });
   });
 });
