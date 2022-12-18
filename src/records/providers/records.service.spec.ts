@@ -1,13 +1,11 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { JwtStrategy } from 'src/auth/jwt.strategy';
-import { User } from 'src/users/entity/user.entity';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { GetRecordsFilterDto } from '../dto/get-records-filter.dto';
-import { HealthStatus } from '../constants/record-health-status.enum';
 import { Healthcare } from '../constants/record-healthcare.enum';
 import { Record } from '../entity/record.entity';
 import { RecordsService } from './records.service';
+import { InternalServerErrorException } from '@nestjs/common';
 
 const mockRecordsRepository = jest.fn(() => ({
   findOneBy: jest.fn(),
@@ -129,6 +127,39 @@ describe('RecordsService', () => {
       });
 
       expect(spy).toBeCalledTimes(2);
+    });
+
+    it('should call query.getMany() 1 time', async () => {
+      jest
+        .spyOn(recordsRepository, 'createQueryBuilder')
+        .mockImplementation(() => createQueryBuilder);
+
+      const spy = jest.spyOn(recordsRepository.createQueryBuilder(), 'getMany');
+
+      await recordsService.getRecords({
+        search: 'test',
+        typeOfCare: Healthcare.EMERGENCY_HEALTHCARE,
+      });
+
+      expect(spy).toBeCalledTimes(1);
+    });
+
+    it('should throw InternalServerErrorException when query.getMany() fails', async () => {
+      jest
+        .spyOn(recordsRepository, 'createQueryBuilder')
+        .mockImplementation(() => createQueryBuilder);
+
+      const spy = jest
+        .spyOn(recordsRepository.createQueryBuilder(), 'getMany')
+        .mockImplementationOnce(() => {
+          throw new InternalServerErrorException();
+        });
+
+      try {
+        await recordsService.getRecords(null);
+      } catch (error) {
+        expect(spy).toThrow(InternalServerErrorException);
+      }
     });
   });
 });
