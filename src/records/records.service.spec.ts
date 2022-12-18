@@ -1,9 +1,9 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { GetRecordsFilterDto } from '../dto/get-records-filter.dto';
-import { Healthcare } from '../constants/record-healthcare.enum';
-import { Record } from '../entity/record.entity';
+import { GetRecordsFilterDto } from './dto/get-records-filter.dto';
+import { Healthcare } from './constants/record-healthcare.enum';
+import { Record } from './record.entity';
 import { RecordsService } from './records.service';
 import { InternalServerErrorException } from '@nestjs/common';
 

@@ -1,4 +1,4 @@
-import { Record } from '../../records/entity/record.entity';
+import { Record } from '../records/record.entity';
 import {
   Column,
   CreateDateColumn,
@@ -7,7 +7,8 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { AccessLevel } from '../constants/user-access-level.enum';
+import { AccessLevel } from './constants/user-access-level.enum';
+import { Appointment } from '../appointments/appointment.entity';
 
 @Entity()
 export class User {
@@ -31,4 +32,9 @@ export class User {
 
   @OneToMany(() => Record, (record) => record.user, { eager: true })
   records: Record[];
+
+  @OneToMany(() => Appointment, (appointment) => appointment.user, {
+    eager: true,
+  })
+  appointments: Appointment[];
 }
