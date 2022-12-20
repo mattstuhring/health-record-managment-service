@@ -5,9 +5,6 @@ import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ConfigSchemaValidation } from './config.schema';
-import { PaymentsModule } from './payments/payments.module';
-import { StripeModule } from './stripe/stripe.module';
-import { AppointmentsModule } from './appointments/appointments.module';
 
 @Module({
   imports: [
@@ -34,9 +31,6 @@ import { AppointmentsModule } from './appointments/appointments.module';
     }),
     AuthModule,
     UsersModule,
-    PaymentsModule,
-    StripeModule,
-    AppointmentsModule,
   ],
 })
 export class AppModule {}
